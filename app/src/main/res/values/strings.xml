@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Profile Management</string>
+
+    <!-- Login Screen -->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
+
+    <!-- Profile -->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="view_diary">View Diary</string>
+    <string name="logout">Logout</string>
+
+    <!-- Diary -->
+    <string name="add_entry">Add Entry</string>
+    <string name="delete_entry">Delete Entry</string>
+    <string name="entry_deleted">Entry deleted</string>
+
+    <!-- Buttons -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+</resources>
