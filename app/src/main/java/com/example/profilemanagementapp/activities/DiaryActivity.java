@@ -13,7 +13,7 @@ import com.example.profilemanagementapp.adapters.DiaryAdapter;
 import java.util.List;
 
 public class DiaryActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;  // RecyclerView for diary entries
+    private RecyclerView recyclerView;
     private Button btnAddEntry;
     private DatabaseHelper dbHelper;
     private int userId;
@@ -24,11 +24,11 @@ public class DiaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_diary);
 
         dbHelper = new DatabaseHelper(this);
-        recyclerView = findViewById(R.id.recyclerView);  // FIX: Correct ID reference
+        recyclerView = findViewById(R.id.recyclerView);
         btnAddEntry = findViewById(R.id.btnAddEntry);
         userId = getIntent().getIntExtra("userId", -1);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         btnAddEntry.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddEditDiaryActivity.class);
@@ -39,9 +39,15 @@ public class DiaryActivity extends AppCompatActivity {
         loadDiaryEntries();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadDiaryEntries();
+    }
+
     private void loadDiaryEntries() {
         List<DiaryEntry> entries = dbHelper.getDiaryEntries(userId);
         DiaryAdapter adapter = new DiaryAdapter(this, entries, userId);
-        recyclerView.setAdapter(adapter);  // Set RecyclerView adapter
+        recyclerView.setAdapter(adapter);
     }
 }

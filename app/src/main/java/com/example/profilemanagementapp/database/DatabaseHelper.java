@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.example.profilemanagementapp.models.DiaryEntry;
+import com.example.profilemanagementapp.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +18,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // Enable foreign key constraints
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, full_name TEXT, dob TEXT, address TEXT, phone TEXT, username TEXT UNIQUE, password TEXT, profile_pic BLOB)");
-        db.execSQL("CREATE TABLE diary (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title TEXT, content TEXT, timestamp TEXT, FOREIGN KEY(user_id) REFERENCES users(id))");
+        // Create users table
+        db.execSQL("CREATE TABLE users (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "full_name TEXT, " +
+                "dob TEXT, " +
+                "address TEXT, " +
+                "phone TEXT, " +
+                "username TEXT UNIQUE, " +
+                "password TEXT, " +
+                "profile_pic BLOB" +
+                ")");
+        // Create diary table with ON DELETE CASCADE
+        db.execSQL("CREATE TABLE diary (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "user_id INTEGER, " +
+                "title TEXT, " +
+                "content TEXT, " +
+                "timestamp TEXT, " +
+                "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Drop and recreate tables
         db.execSQL("DROP TABLE IF EXISTS users");
         db.execSQL("DROP TABLE IF EXISTS diary");
         onCreate(db);
@@ -86,15 +113,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Update an existing diary entry
-    public boolean updateDiaryEntry(DiaryEntry entry) {
+    public void updateDiaryEntry(DiaryEntry entry) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("title", entry.getTitle());
         values.put("content", entry.getContent());
         values.put("timestamp", entry.getTimestamp());
 
-        int result = db.update("diary", values, "id = ?", new String[]{String.valueOf(entry.getId())});
-        return result > 0;
+        db.update("diary", values, "id = ?", new String[]{String.valueOf(entry.getId())});
     }
 
     // Delete a diary entry
@@ -102,5 +128,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete("diary", "id = ?", new String[]{String.valueOf(entryId)});
         return result > 0;
+    }
+
+    // Clear the database (for testing purposes)
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM users");
+        db.execSQL("DELETE FROM diary");
+        db.close();
+    }
+
+    // Register a new user
+    public boolean registerUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("full_name", user.getFullName());
+        values.put("dob", user.getDob());
+        values.put("address", user.getAddress());
+        values.put("phone", user.getPhone());
+        values.put("username", user.getUsername());
+        values.put("password", user.getPassword());
+        long result = db.insert("users", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    // Validate user login
+    public boolean validateUser(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ? AND password = ?",
+                new String[]{username, password});
+        boolean userExists = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return userExists;
     }
 }

@@ -31,13 +31,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        String username = etUsername.getText().toString();
-        String password = etPassword.getText().toString();
+        String username = etUsername.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
         User user = authService.authenticate(username, password);
         if (user != null) {
             Snackbar.make(btnLogin, "Login Successful!", Snackbar.LENGTH_SHORT).show();
             Intent intent = new Intent(this, ProfileActivity.class);
+            // Pass the user ID so ProfileActivity can load user data
             intent.putExtra("userId", user.getId());
             startActivity(intent);
             finish();

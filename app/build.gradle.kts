@@ -49,10 +49,12 @@ dependencies {
 
     // Room Database (Optional, if using Room instead of SQLiteOpenHelper)
     implementation("androidx.room:room-runtime:2.5.2")
+    implementation(libs.core)
     annotationProcessor("androidx.room:room-compiler:2.5.2") // ✅ Required for Room
 
     // Testing Dependencies
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.9")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

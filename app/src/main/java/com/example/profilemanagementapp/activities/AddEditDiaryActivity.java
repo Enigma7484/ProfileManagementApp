@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.profilemanagementapp.R;
 import com.example.profilemanagementapp.database.DatabaseHelper;
@@ -41,7 +42,8 @@ public class AddEditDiaryActivity extends AppCompatActivity {
         }
 
         btnSave.setOnClickListener(v -> saveEntry());
-        btnDelete.setOnClickListener(v -> deleteEntry());
+        // Instead of directly deleting, show confirmation dialog
+        btnDelete.setOnClickListener(v -> confirmDeleteEntry());
     }
 
     private void loadDiaryEntry() {
@@ -64,14 +66,27 @@ public class AddEditDiaryActivity extends AppCompatActivity {
 
         if (entryId == -1) {
             DiaryEntry newEntry = new DiaryEntry(userId, title, content, timestamp);
-            dbHelper.addDiaryEntry(newEntry);
-            Toast.makeText(this, "Entry added successfully", Toast.LENGTH_SHORT).show();
+            if (dbHelper.addDiaryEntry(newEntry)) {
+                Toast.makeText(this, "Entry added successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to add entry", Toast.LENGTH_SHORT).show();
+            }
         } else {
             DiaryEntry updatedEntry = new DiaryEntry(entryId, userId, title, content, timestamp);
             dbHelper.updateDiaryEntry(updatedEntry);
             Toast.makeText(this, "Entry updated successfully", Toast.LENGTH_SHORT).show();
         }
         finish();
+    }
+
+    // New confirmation dialog for diary entry deletion.
+    private void confirmDeleteEntry() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Deletion")
+                .setMessage("Are you sure you want to delete this diary entry?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteEntry())
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void deleteEntry() {

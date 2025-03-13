@@ -15,14 +15,19 @@ public class AuthenticationService {
     }
 
     public User authenticate(String username, String password) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // Hash the input password to match stored hashed password
         String hashedPassword = EncryptionHelper.hashPassword(password);
 
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{username, hashedPassword});
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM users WHERE username = ? AND password = ?",
+                new String[]{username, hashedPassword}
+        );
 
+        User user = null;
         if (cursor.moveToFirst()) {
-            User user = new User(
+            // columns: 0=id, 1=full_name, 2=dob, 3=address, 4=phone, 5=username, 6=password, 7=profile_pic
+            user = new User(
                     cursor.getInt(0),
                     cursor.getString(1),
                     cursor.getString(2),
@@ -32,10 +37,10 @@ public class AuthenticationService {
                     cursor.getString(6),
                     cursor.getBlob(7)
             );
-            cursor.close();
-            return user;
         }
         cursor.close();
-        return null; // Invalid credentials
+        db.close();
+
+        return user; // null if invalid credentials
     }
 }

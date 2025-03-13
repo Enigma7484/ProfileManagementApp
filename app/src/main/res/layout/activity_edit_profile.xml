@@ -1,22 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- AppBar with Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:title="Edit Profile"
+            android:background="?attr/colorPrimary"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <EditText android:id="@+id/etFullName" android:hint="Full Name"/>
-        <EditText android:id="@+id/etDob" android:hint="Date of Birth"/>
-        <EditText android:id="@+id/etAddress" android:hint="Address"/>
-        <EditText android:id="@+id/etPhone" android:hint="Phone Number"/>
-        <EditText android:id="@+id/etUsername" android:hint="Username"/>
-        <EditText android:id="@+id/etPassword" android:hint="New Password (Leave blank to keep current)" android:inputType="textPassword"/>
+    <!-- Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="20dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button android:id="@+id/btnSaveChanges" android:text="Save Changes"/>
-        <Button android:id="@+id/btnDeleteProfile" android:text="Delete Profile"/>
-    </LinearLayout>
-</ScrollView>
+            <!-- Profile Picture -->
+            <ImageView
+                android:id="@+id/ivProfilePic"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_camera" />
+
+            <!-- Buttons for updating profile picture -->
+            <Button
+                android:id="@+id/btnSelectPic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Picture"
+                android:layout_gravity="center" />
+            <Button
+                android:id="@+id/btnCapturePic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capture Picture"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/etFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full Name" />
+
+            <EditText
+                android:id="@+id/etDob"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date of Birth" />
+
+            <EditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address" />
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Phone Number" />
+
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New Password (Leave blank to keep current)"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/btnSaveChanges"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Changes" />
+
+            <Button
+                android:id="@+id/btnDeleteProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete Profile" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
