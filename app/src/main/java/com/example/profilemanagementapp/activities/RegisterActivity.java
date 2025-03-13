@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.profilemanagementapp.R;
 import com.example.profilemanagementapp.database.DatabaseHelper;
-import com.example.profilemanagementapp.models.User;
 import com.example.profilemanagementapp.utils.EncryptionHelper;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -45,13 +44,17 @@ public class RegisterActivity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     try {
-                        InputStream is = getContentResolver().openInputStream(
-                                Objects.requireNonNull(result.getData().getData()));
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            baos.write(buffer, 0, bytesRead);
+                        ByteArrayOutputStream baos;
+                        try (InputStream is = getContentResolver().openInputStream(
+                                Objects.requireNonNull(result.getData().getData()))) {
+                            baos = new ByteArrayOutputStream();
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+                            while (true) {
+                                assert is != null;
+                                if ((bytesRead = is.read(buffer)) == -1) break;
+                                baos.write(buffer, 0, bytesRead);
+                            }
                         }
                         profilePicData = baos.toByteArray();
                         Bitmap bitmap = BitmapFactory.decodeByteArray(profilePicData, 0, profilePicData.length);

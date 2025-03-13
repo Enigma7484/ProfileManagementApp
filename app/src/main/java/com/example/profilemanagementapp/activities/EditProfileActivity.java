@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -45,12 +46,16 @@ public class EditProfileActivity extends AppCompatActivity {
             result -> {
                 if(result.getResultCode() == RESULT_OK && result.getData() != null) {
                     try {
-                        InputStream is = getContentResolver().openInputStream(result.getData().getData());
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            baos.write(buffer, 0, bytesRead);
+                        ByteArrayOutputStream baos;
+                        try (InputStream is = getContentResolver().openInputStream(Objects.requireNonNull(result.getData().getData()))) {
+                            baos = new ByteArrayOutputStream();
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+                            while (true) {
+                                assert is != null;
+                                if ((bytesRead = is.read(buffer)) == -1) break;
+                                baos.write(buffer, 0, bytesRead);
+                            }
                         }
                         profilePicData = baos.toByteArray();
                         Bitmap bitmap = BitmapFactory.decodeByteArray(profilePicData, 0, profilePicData.length);

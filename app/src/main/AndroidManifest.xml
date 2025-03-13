@@ -27,22 +27,27 @@
         <!-- Registration Activity -->
         <activity
             android:name=".activities.RegisterActivity"
+            android:label="Register"
             android:exported="false" />
 
         <!-- Profile Management -->
         <activity
             android:name=".activities.ProfileActivity"
+            android:label="Profile"
             android:exported="false" />
         <activity
             android:name=".activities.EditProfileActivity"
+            android:label="Edit Profile"
             android:exported="false" />
 
         <!-- Diary Management -->
         <activity
             android:name=".activities.DiaryActivity"
+            android:label="Diary"
             android:exported="false" />
         <activity
             android:name=".activities.AddEditDiaryActivity"
+            android:label="Add/Edit Diary Entry"
             android:exported="false" />
 
     </application>
